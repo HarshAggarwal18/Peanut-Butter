@@ -105,6 +105,7 @@ const HeroSection = () => {
   return (
     <section
       ref={heroRef}
+      id="hero-section"
       className="relative min-h-screen flex items-center overflow-hidden bg-gradient-premium"
     >
       {/* Animated background circles with parallax */}

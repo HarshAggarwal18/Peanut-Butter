@@ -3,6 +3,7 @@
  * Each section handles its own data fetching and animations.
  */
 import PageTransition from '../components/ui/PageTransition';
+import Intro from '../components/sections/Intro';
 import HeroSection from '../components/sections/HeroSection';
 import InfoSection from '../components/sections/InfoSection';
 import WhyDifferent from '../components/sections/WhyDifferent';
@@ -14,6 +15,7 @@ const HomePage = () => {
   return (
     <PageTransition>
       <main>
+        <Intro />
         <HeroSection />
         <InfoSection />
         <WhyDifferent />
