@@ -2,11 +2,14 @@
  * InfoSection — Transparent jar breakdown storytelling.
  * Uses GSAP sticky scroll for step-by-step ingredient reveal.
  */
+
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
 import SectionHeading from '../ui/SectionHeading';
 import AnimatedReveal from '../ui/AnimatedReveal';
+import saltImage from '../../assets/why-different/salt.png';
+import peanutsImage from '../../assets/why-different/peanuts.png';
 
 const ingredients = [
   {
@@ -15,6 +18,7 @@ const ingredients = [
     description:
       'Hand-selected peanuts, slow-roasted to perfection. Our proprietary roasting process unlocks maximum flavor while preserving all natural proteins and healthy fats.',
     icon: '🥜',
+    iconAlt: 'Peanuts',
   },
   {
     name: 'Himalayan Sea Salt',
@@ -22,6 +26,7 @@ const ingredients = [
     description:
       'A delicate pinch of pink Himalayan salt to enhance the natural peanut sweetness. Nothing more. Nothing less. That\'s our promise.',
     icon: '🧂',
+    iconAlt: 'Himalayan sea salt',
   },
 ];
 
@@ -57,22 +62,35 @@ const InfoSection = () => {
         }
       );
 
-      gsap.from('.ingredient-item', {
-        y: 50,
-        opacity: 0,
-        rotateX: -10,
+      gsap.to('.ingredient-item', {
+        y: 0,
+        opacity: 1,
+        rotateX: 0,
         duration: 0.9,
         stagger: 0.18,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: timelineRef.current,
           start: 'top 70%',
+          markers: false,
         },
       });
 
-      gsap.from('.promise-item', {
-        y: 20,
+      gsap.from('.inside-float-item', {
+        y: 40,
         opacity: 0,
+        duration: 0.9,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 75%',
+        },
+      });
+
+      gsap.to('.promise-item', {
+        y: 0,
+        opacity: 1,
         duration: 0.6,
         stagger: 0.08,
         ease: 'power2.out',
@@ -87,17 +105,41 @@ const InfoSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} id="story" className="section-padding bg-cream relative">
+    <section
+      ref={sectionRef}
+      id="story"
+      className="section-padding bg-gradient-premium relative overflow-hidden"
+    >
+      <motion.img
+        src={peanutsImage}
+        alt=""
+        aria-hidden="true"
+        className="inside-float-item pointer-events-none select-none hidden md:block absolute top-[15%] -left-10 lg:left-2 xl:left-6 w-176 lg:w-164 opacity-95 z-0 "
+        animate={{ y: [0, -20, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <motion.img
+        src={saltImage}
+        alt=""
+        aria-hidden="true"
+        className="inside-float-item pointer-events-none select-none hidden md:block absolute top-[44%] -right-6 lg:right-0 xl:right-3 w-176 lg:w-164 opacity-95 z-0 "
+        animate={{ y: [0, -20, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
       <div className="container-custom">
-        <SectionHeading
-          title="What's Inside"
-          subtitle="We believe the best ingredients speak for themselves. Here's everything in our jar — and everything that's not."
-        />
+        <div className="max-w-3xl mx-auto text-center">
+          <SectionHeading
+            title="What's Inside"
+            subtitle="We believe the best ingredients speak for themselves. Here's everything in our jar — and everything that's not."
+          />
+        </div>
 
         {/* Ingredients Timeline */}
-        <div ref={timelineRef} className="relative max-w-3xl mx-auto mt-16">
+        <div ref={timelineRef} className="relative max-w-4xl mx-auto mt-16 z-10">
           {/* Progress line */}
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-beige -translate-x-1/2">
+          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-golden/35 md:-translate-x-1/2">
             <div
               ref={progressRef}
               className="w-full h-full bg-golden origin-top"
@@ -117,14 +159,14 @@ const InfoSection = () => {
             >
               {/* Dot */}
               <div
-                className={`absolute left-8 md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-golden border-4 border-cream z-10`}
+                className="absolute left-6 md:left-1/2 md:-translate-x-1/2 w-4 h-4 rounded-full bg-golden border-4 border-cream z-20"
               />
 
               {/* Content */}
-              <div className={`ml-20 md:ml-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-16' : 'md:pl-16'}`}>
-                <div className="bg-white rounded-2xl p-8 shadow-soft">
+              <div className={`w-full pl-14 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-16' : 'md:pl-16'}`}>
+                <div className="bg-white/95 rounded-3xl p-7 md:p-8 shadow-soft border border-beige/25">
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="text-3xl">{ingredient.icon}</span>
+                    <span className="text-4xl">{ingredient.icon}</span>
                     <div>
                       <h3 className="font-serif text-xl font-semibold text-dark">
                         {ingredient.name}

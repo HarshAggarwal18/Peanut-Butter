@@ -1,11 +1,14 @@
 /**
- * BenefitsSection — Clean premium benefits block with soft cards.
+ * BenefitsSection — static dumbbell visual.
+ * Scroll-through reverse/scroll-out animation is disabled.
  */
+
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from '../../animations/gsapAnimations';
 import SectionWrapper from '../ui/SectionWrapper';
 import SectionHeading from '../ui/SectionHeading';
+import dumbbellImage from '../../assets/benefits/dumbbell.png';
 
 const benefits = [
   {
@@ -54,10 +57,30 @@ const benefits = [
 
 const BenefitsSection = () => {
   const sectionRef = useRef(null);
+  const dumbbellRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Stagger cards from below
+      // One-way dumbbell reveal (no scroll-out reverse)
+      gsap.fromTo(
+        dumbbellRef.current,
+        { y: -24, opacity: 0, scale: 0.96 },
+        {
+          y: 0,
+          opacity: 0.95,
+          scale: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 90%',
+            toggleActions: 'play none none none',
+            once: true,
+          },
+        }
+      );
+
+      // Stagger cards from below (one-way only)
       gsap.fromTo(
         '.benefit-card',
         { y: 60, opacity: 0, rotateX: 8 },
@@ -70,8 +93,9 @@ const BenefitsSection = () => {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+            once: true,
           },
         }
       );
@@ -82,12 +106,22 @@ const BenefitsSection = () => {
 
   return (
     <SectionWrapper id="benefits" className="bg-cream/90">
-      <SectionHeading
-        title="Every Spoon Fuels Strength"
-        subtitle="Designed for those who take nutrition seriously — without compromising taste."
+      <img
+        ref={dumbbellRef}
+        src={dumbbellImage}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute top-0 right-20 z-0 w-48 md:w-72 lg:w-[24rem] xl:w-[80rem] translate-x-1/4 -translate-y-1/3 md:translate-x-[10%] md:-translate-y-[28%] opacity-95"
       />
 
-      <div ref={sectionRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+      <div className="relative z-10">
+        <SectionHeading
+          title="Every Spoon Fuels Strength"
+          subtitle="Designed for those who take nutrition seriously — without compromising taste."
+        />
+      </div>
+
+      <div ref={sectionRef} className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
         {benefits.map((benefit) => (
           <motion.div
             key={benefit.title}
@@ -116,3 +150,94 @@ const BenefitsSection = () => {
 };
 
 export default BenefitsSection;
+// Runtime UI polish (non-breaking): glass effect, gradient edge, smoother hover, subtle icon/title motion.
+if (typeof document !== 'undefined' && !document.getElementById('benefits-ui-polish')) {
+  const style = document.createElement('style');
+  style.id = 'benefits-ui-polish';
+  style.innerHTML = `
+    #benefits .benefit-card {
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow:
+        0 10px 30px rgba(61, 45, 36, 0.07),
+        0 2px 10px rgba(61, 45, 36, 0.04);
+      transform-style: preserve-3d;
+      will-change: transform, box-shadow;
+    }
+
+    #benefits .benefit-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: 1.5rem;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.85),
+        rgba(226, 180, 90, 0.35),
+        rgba(255,255,255,0.7)
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    #benefits .benefit-card::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      top: -70px;
+      right: -70px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(226, 180, 90, 0.18), transparent 65%);
+      opacity: 0;
+      transition: opacity .35s ease;
+      pointer-events: none;
+    }
+
+    #benefits .benefit-card:hover {
+      box-shadow:
+        0 18px 38px rgba(61, 45, 36, 0.13),
+        0 6px 16px rgba(61, 45, 36, 0.08);
+    }
+
+    #benefits .benefit-card:hover::after {
+      opacity: 1;
+    }
+
+    #benefits .benefit-card .text-peanut\\/55 {
+      transition: transform .35s ease, color .35s ease, opacity .35s ease;
+      opacity: .85;
+    }
+
+    #benefits .benefit-card:hover .text-peanut\\/55 {
+      transform: translateY(-2px) scale(1.05);
+      color: rgba(111, 78, 55, 0.85);
+      opacity: 1;
+    }
+
+    #benefits .benefit-card h3 {
+      transition: letter-spacing .3s ease, transform .3s ease;
+    }
+
+    #benefits .benefit-card:hover h3 {
+      letter-spacing: .2px;
+      transform: translateY(-1px);
+    }
+
+    #benefits .benefit-card p {
+      transition: color .3s ease;
+    }
+
+    #benefits .benefit-card:hover p {
+      color: rgba(61, 45, 36, 0.75);
+    }
+  `;
+  document.head.appendChild(style);
+}
