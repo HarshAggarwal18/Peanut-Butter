@@ -37,6 +37,8 @@ const promises = [
 const InfoSection = () => {
   const sectionRef = useRef(null);
   const progressRef = useRef(null);
+  const timelineRef = useRef(null);
+  const promisesRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -54,6 +56,31 @@ const InfoSection = () => {
           },
         }
       );
+
+      gsap.from('.ingredient-item', {
+        y: 50,
+        opacity: 0,
+        rotateX: -10,
+        duration: 0.9,
+        stagger: 0.18,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: timelineRef.current,
+          start: 'top 70%',
+        },
+      });
+
+      gsap.from('.promise-item', {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: promisesRef.current,
+          start: 'top 80%',
+        },
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -68,7 +95,7 @@ const InfoSection = () => {
         />
 
         {/* Ingredients Timeline */}
-        <div className="relative max-w-3xl mx-auto mt-16">
+        <div ref={timelineRef} className="relative max-w-3xl mx-auto mt-16">
           {/* Progress line */}
           <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-beige -translate-x-1/2">
             <div
@@ -82,7 +109,7 @@ const InfoSection = () => {
               key={ingredient.name}
               direction={index % 2 === 0 ? 'left' : 'right'}
               delay={index * 0.15}
-              className={`relative flex items-start gap-8 mb-20 ${
+              className={`ingredient-item relative flex items-start gap-8 mb-20 ${
                 index % 2 === 0
                   ? 'md:flex-row'
                   : 'md:flex-row-reverse md:text-right'
@@ -124,12 +151,15 @@ const InfoSection = () => {
             </h3>
           </AnimatedReveal>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          <div
+            ref={promisesRef}
+            className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto"
+          >
             {promises.map((promise, index) => (
               <AnimatedReveal key={promise.label} delay={index * 0.08} direction="scale">
                 <motion.div
                   whileHover={{ scale: 1.05, y: -4 }}
-                  className="bg-white rounded-xl p-5 text-center shadow-soft hover:shadow-medium transition-shadow duration-300"
+                  className="promise-item bg-white rounded-xl p-5 text-center shadow-soft hover:shadow-medium transition-shadow duration-300"
                 >
                   <span className="text-2xl block mb-2">{promise.icon}</span>
                   <span className="text-xs font-semibold text-peanut uppercase tracking-wider">

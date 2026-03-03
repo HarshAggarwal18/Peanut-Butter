@@ -1,8 +1,10 @@
 /**
- * WhyDifferent — Comparison table with animated reveal.
+ * WhyDifferent — Comparison table with GSAP row-by-row scroll reveal.
  * Shows PB Brand vs. generic peanut butters side by side.
  */
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
 import SectionWrapper from '../ui/SectionWrapper';
 import SectionHeading from '../ui/SectionHeading';
 import AnimatedReveal from '../ui/AnimatedReveal';
@@ -52,6 +54,51 @@ const comparisons = [
 ];
 
 const WhyDifferent = () => {
+  const tableRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Row-by-row stagger reveal on scroll
+      gsap.fromTo(
+        '.compare-row',
+        { opacity: 0, x: -30, filter: 'blur(4px)' },
+        {
+          opacity: 1,
+          x: 0,
+          filter: 'blur(0px)',
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: tableRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Highlight the PB Brand column with a golden flash
+      gsap.fromTo(
+        '.pb-highlight',
+        { color: 'rgba(196, 151, 59, 0.5)' },
+        {
+          color: 'rgba(196, 151, 59, 1)',
+          duration: 0.4,
+          stagger: 0.08,
+          delay: 0.3,
+          ease: 'power1.out',
+          scrollTrigger: {
+            trigger: tableRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, tableRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <SectionWrapper id="why-different" dark>
       <SectionHeading
@@ -60,13 +107,7 @@ const WhyDifferent = () => {
         light
       />
 
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-50px' }}
-        className="max-w-4xl mx-auto mt-12"
-      >
+      <div ref={tableRef} className="max-w-4xl mx-auto mt-12">
         {/* Table Header */}
         <div className="grid grid-cols-3 gap-4 mb-6 px-4">
           <span className="text-cream/60 text-sm font-medium uppercase tracking-wider">
@@ -86,15 +127,16 @@ const WhyDifferent = () => {
         {comparisons.map((row, index) => (
           <motion.div
             key={row.feature}
-            variants={staggerItem}
-            className={`grid grid-cols-3 gap-4 px-4 py-4 rounded-xl transition-colors ${
+            whileHover={{ x: 4, backgroundColor: 'rgba(255,255,255,0.08)' }}
+            transition={{ duration: 0.2 }}
+            className={`compare-row grid grid-cols-3 gap-4 px-4 py-4 rounded-xl transition-colors ${
               index % 2 === 0 ? 'bg-white/5' : ''
             }`}
           >
             <span className="text-cream/80 text-sm font-medium flex items-center">
               {row.feature}
             </span>
-            <span className="text-center text-golden font-semibold text-sm flex items-center justify-center gap-2">
+            <span className="pb-highlight text-center text-golden font-semibold text-sm flex items-center justify-center gap-2">
               <svg className="w-4 h-4 text-success" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -116,7 +158,7 @@ const WhyDifferent = () => {
             </span>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
 
       {/* Bottom CTA */}
       <AnimatedReveal delay={0.3} className="text-center mt-12">

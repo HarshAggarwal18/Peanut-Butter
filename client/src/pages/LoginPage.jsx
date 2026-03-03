@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
+import PageTransition from '../components/ui/PageTransition';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
@@ -47,14 +48,15 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-premium pt-20 pb-16 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-white rounded-3xl p-8 shadow-medium">
+    <PageTransition>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-premium pt-20 pb-16 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-md"
+        >
+          <div className="bg-white rounded-3xl p-8 shadow-medium">
           {/* Header */}
           <div className="text-center mb-8">
             <Link to="/" className="font-serif text-3xl font-bold text-dark">
@@ -142,9 +144,10 @@ const LoginPage = () => {
                 : "Don't have an account? Create One"}
             </button>
           </div>
-        </div>
-      </motion.div>
-    </div>
+          </div>
+        </motion.div>
+      </div>
+    </PageTransition>
   );
 };
 

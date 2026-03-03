@@ -1,16 +1,20 @@
 /**
- * BenefitsSection — Four key benefits with animated cards.
+ * BenefitsSection — Four key benefits with animated counters and staggered cards.
  * Protein, Good Fats, Energy, Clean Ingredients.
  */
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
 import SectionWrapper from '../ui/SectionWrapper';
 import SectionHeading from '../ui/SectionHeading';
+import AnimatedCounter from '../ui/AnimatedCounter';
 import { staggerContainer, staggerItem } from '../../animations/variants';
 
 const benefits = [
   {
     title: 'High Protein',
-    value: '30g',
+    value: '30',
+    valueSuffix: 'g',
     unit: 'per 100g',
     description:
       'Fuel your muscles with one of the highest protein-per-serving ratios in the market. Perfect post-workout or as a daily protein boost.',
@@ -23,7 +27,8 @@ const benefits = [
   },
   {
     title: 'Healthy Fats',
-    value: '50g',
+    value: '50',
+    valueSuffix: 'g',
     unit: 'per 100g',
     description:
       'Rich in monounsaturated and polyunsaturated fats that support heart health, brain function, and sustained energy throughout your day.',
@@ -37,6 +42,7 @@ const benefits = [
   {
     title: 'Clean Energy',
     value: '590',
+    valueSuffix: '',
     unit: 'kcal per 100g',
     description:
       'Sustained, clean energy from whole-food fats and proteins. No sugar spikes, no crashes. Just steady fuel for peak performance.',
@@ -50,6 +56,7 @@ const benefits = [
   {
     title: 'Clean Label',
     value: '2',
+    valueSuffix: '',
     unit: 'ingredients only',
     description:
       'Just peanuts and sea salt. We believe food should be simple, honest, and transparent. Every jar. Every time.',
@@ -63,6 +70,33 @@ const benefits = [
 ];
 
 const BenefitsSection = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Stagger cards from below
+      gsap.fromTo(
+        '.benefit-card',
+        { y: 60, opacity: 0, rotateX: 8 },
+        {
+          y: 0,
+          opacity: 1,
+          rotateX: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 70%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <SectionWrapper id="benefits">
       <SectionHeading
@@ -70,36 +104,36 @@ const BenefitsSection = () => {
         subtitle="Every spoonful is engineered for those who demand more from their food."
       />
 
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-50px' }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12"
-      >
+      <div ref={sectionRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
         {benefits.map((benefit) => (
           <motion.div
             key={benefit.title}
-            variants={staggerItem}
-            whileHover={{ y: -8, transition: { duration: 0.3 } }}
-            className="relative bg-white rounded-2xl p-8 shadow-soft hover:shadow-medium transition-all duration-500 group"
+            whileHover={{ y: -10, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
+            className="benefit-card relative bg-white rounded-2xl p-8 shadow-soft hover:shadow-medium transition-all duration-500 group overflow-hidden"
           >
             {/* Gradient background on hover */}
             <div
               className={`absolute inset-0 bg-gradient-to-br ${benefit.gradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
             />
 
+            {/* Shine effect on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+              <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out" />
+            </div>
+
             <div className="relative z-10">
               {/* Icon */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-premium flex items-center justify-center text-peanut mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-premium flex items-center justify-center text-peanut mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-400">
                 {benefit.icon}
               </div>
 
-              {/* Value */}
+              {/* Animated Value */}
               <div className="mb-4">
-                <span className="font-serif text-4xl font-bold text-dark">
-                  {benefit.value}
-                </span>
+                <AnimatedCounter
+                  value={benefit.value}
+                  suffix={benefit.valueSuffix || ''}
+                  className="font-serif text-4xl font-bold text-dark"
+                />
                 <span className="text-sm text-peanut-light ml-1">
                   {benefit.unit}
                 </span>
@@ -117,7 +151,7 @@ const BenefitsSection = () => {
             </div>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
     </SectionWrapper>
   );
 };

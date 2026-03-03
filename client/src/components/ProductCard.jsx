@@ -2,7 +2,7 @@
  * ProductCard — Beautifully animated product card with variant selector.
  */
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { useCart } from '../context/CartContext';
 import { hoverScale } from '../animations/variants';
@@ -19,6 +19,11 @@ const badgeLabels = {
 const ProductCard = ({ product }) => {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const { addItem } = useCart();
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const smoothRotateX = useSpring(rotateX, { stiffness: 140, damping: 18 });
+  const smoothRotateY = useSpring(rotateY, { stiffness: 140, damping: 18 });
+  const shineX = useTransform(smoothRotateY, [-8, 8], ['35%', '65%']);
 
   const variant = product.variants[selectedVariant];
   const primaryImage =
@@ -27,9 +32,29 @@ const ProductCard = ({ product }) => {
     ? Math.round(((variant.compareAtPrice - variant.price) / variant.compareAtPrice) * 100)
     : 0;
 
+  const handleMouseMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width;
+    const py = (event.clientY - rect.top) / rect.height;
+    rotateY.set((px - 0.5) * 10);
+    rotateX.set((0.5 - py) * 8);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
   return (
     <motion.div
       className="group relative bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-medium transition-shadow duration-500"
+      style={{
+        rotateX: smoothRotateX,
+        rotateY: smoothRotateY,
+        transformStyle: 'preserve-3d',
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       {...hoverScale}
     >
       {/* Image */}
@@ -53,6 +78,12 @@ const ProductCard = ({ product }) => {
             {discount}% OFF
           </span>
         )}
+
+        <motion.div
+          aria-hidden
+          style={{ left: shineX }}
+          className="pointer-events-none absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        />
 
         {/* Quick Add */}
         <motion.button

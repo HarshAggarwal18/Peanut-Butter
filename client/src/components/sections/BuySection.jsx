@@ -9,6 +9,8 @@ import SectionWrapper from '../ui/SectionWrapper';
 import SectionHeading from '../ui/SectionHeading';
 import ProductCard from '../ProductCard';
 import { staggerContainer, staggerItem } from '../../animations/variants';
+import { useRef } from 'react';
+import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
 
 const categories = [
   { label: 'All', value: '' },
@@ -22,10 +24,43 @@ const BuySection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('');
+  const sectionRef = useRef(null);
 
   useEffect(() => {
     fetchProducts();
   }, [activeCategory]);
+
+  useEffect(() => {
+    if (loading) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from('.buy-filter-chip', {
+        y: 12,
+        opacity: 0,
+        duration: 0.45,
+        stagger: 0.06,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 78%',
+        },
+      });
+
+      gsap.from('.buy-product-item', {
+        y: 36,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.buy-products-grid',
+          start: 'top 82%',
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [loading, products]);
 
   const fetchProducts = async () => {
     try {
@@ -43,11 +78,12 @@ const BuySection = () => {
   };
 
   return (
-    <SectionWrapper id="products">
-      <SectionHeading
-        title="Shop Our Collection"
-        subtitle="Choose your fuel. Each jar is crafted with the same unwavering commitment to quality."
-      />
+    <SectionWrapper id="products" className="relative">
+      <div ref={sectionRef}>
+        <SectionHeading
+          title="Shop Our Collection"
+          subtitle="Choose your fuel. Each jar is crafted with the same unwavering commitment to quality."
+        />
 
       {/* Category Filter */}
       <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -57,7 +93,7 @@ const BuySection = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveCategory(cat.value)}
-            className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+            className={`buy-filter-chip px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
               activeCategory === cat.value
                 ? 'bg-peanut text-cream shadow-medium'
                 : 'bg-white text-peanut hover:bg-beige/50 shadow-soft'
@@ -74,13 +110,13 @@ const BuySection = () => {
           {[1, 2, 3, 4].map((n) => (
             <div
               key={n}
-              className="bg-white rounded-2xl overflow-hidden shadow-soft animate-pulse"
+              className="bg-white rounded-2xl overflow-hidden shadow-soft"
             >
-              <div className="aspect-square bg-beige/30" />
+              <div className="aspect-square bg-beige/30 shimmer" />
               <div className="p-5 space-y-3">
-                <div className="h-4 bg-beige/30 rounded w-3/4" />
-                <div className="h-3 bg-beige/20 rounded w-1/2" />
-                <div className="h-8 bg-beige/30 rounded" />
+                <div className="h-4 bg-beige/30 rounded w-3/4 shimmer" />
+                <div className="h-3 bg-beige/20 rounded w-1/2 shimmer" />
+                <div className="h-8 bg-beige/30 rounded shimmer" />
               </div>
             </div>
           ))}
@@ -91,10 +127,10 @@ const BuySection = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-30px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="buy-products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {products.map((product) => (
-            <motion.div key={product._id} variants={staggerItem}>
+            <motion.div key={product._id} variants={staggerItem} className="buy-product-item">
               <ProductCard product={product} />
             </motion.div>
           ))}
@@ -110,16 +146,17 @@ const BuySection = () => {
       )}
 
       {/* Free Shipping Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mt-12 bg-gradient-to-r from-peanut to-peanut-dark rounded-2xl p-6 text-center text-cream"
-      >
-        <p className="text-sm font-medium">
-          🚚 Free shipping on all orders above ₹499 • 🔄 Easy 7-day returns • 🛡️ 100% Secure payments
-        </p>
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 bg-gradient-to-r from-peanut to-peanut-dark rounded-2xl p-6 text-center text-cream"
+        >
+          <p className="text-sm font-medium">
+            🚚 Free shipping on all orders above ₹499 • 🔄 Easy 7-day returns • 🛡️ 100% Secure payments
+          </p>
+        </motion.div>
+      </div>
     </SectionWrapper>
   );
 };

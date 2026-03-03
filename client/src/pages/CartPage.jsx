@@ -7,6 +7,7 @@ import { HiOutlineTrash, HiPlus, HiMinus, HiArrowLeft } from 'react-icons/hi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
+import PageTransition from '../components/ui/PageTransition';
 import api from '../lib/api';
 import toast from 'react-hot-toast';
 
@@ -66,30 +67,33 @@ const CartPage = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream pt-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <span className="text-6xl block mb-6">🥜</span>
-          <h2 className="font-serif text-2xl text-dark mb-4">Your cart is empty</h2>
-          <p className="text-peanut-light mb-8">
-            Looks like you haven't added any peanut butter yet.
-          </p>
-          <Link to="/">
-            <Button variant="golden" size="lg">
-              Browse Products
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
+      <PageTransition>
+        <div className="min-h-screen flex items-center justify-center bg-cream pt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <span className="text-6xl block mb-6">🥜</span>
+            <h2 className="font-serif text-2xl text-dark mb-4">Your cart is empty</h2>
+            <p className="text-peanut-light mb-8">
+              Looks like you haven't added any peanut butter yet.
+            </p>
+            <Link to="/">
+              <Button variant="golden" size="lg">
+                Browse Products
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream pt-24 pb-16">
-      <div className="container-custom">
+    <PageTransition>
+      <div className="min-h-screen bg-cream pt-24 pb-16">
+        <div className="container-custom">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div>
@@ -112,19 +116,19 @@ const CartPage = () => {
           </button>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
-            <AnimatePresence mode="popLayout">
-              {items.map((item) => (
-                <motion.div
-                  key={`${item.product}-${item.variantId}`}
-                  layout
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20, height: 0 }}
-                  className="bg-white rounded-2xl p-5 shadow-soft flex items-center gap-5"
-                >
+            <div className="lg:col-span-2 space-y-4">
+              <AnimatePresence mode="popLayout">
+                {items.map((item) => (
+                  <motion.div
+                    key={`${item.product}-${item.variantId}`}
+                    layout
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20, height: 0 }}
+                    className="bg-white rounded-2xl p-5 shadow-soft flex items-center gap-5"
+                  >
                   {/* Image */}
                   <div className="w-20 h-20 bg-gradient-premium rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden">
                     {item.image ? (
@@ -187,14 +191,14 @@ const CartPage = () => {
                   >
                     <HiOutlineTrash className="w-5 h-5" />
                   </button>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
 
           {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl p-6 shadow-soft sticky top-28">
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-2xl p-6 shadow-soft sticky top-28">
               <h3 className="font-serif text-xl font-semibold text-dark mb-6">
                 Order Summary
               </h3>
@@ -244,11 +248,12 @@ const CartPage = () => {
               <p className="text-[10px] text-center text-peanut-light mt-4">
                 🔒 Secured by Stripe. 256-bit SSL encryption.
               </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 };
 

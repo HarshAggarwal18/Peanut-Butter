@@ -9,6 +9,8 @@ import SectionWrapper from '../ui/SectionWrapper';
 import SectionHeading from '../ui/SectionHeading';
 import ReviewCard from '../ReviewCard';
 import { staggerContainer, staggerItem } from '../../animations/variants';
+import { useRef } from 'react';
+import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
 
 // Fallback reviews when API is not available
 const fallbackReviews = [
@@ -71,6 +73,7 @@ const fallbackReviews = [
 const ReviewSection = () => {
   const [reviews, setReviews] = useState(fallbackReviews);
   const [averageRating, setAverageRating] = useState(4.9);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
     // Try to fetch from API, fallback to static data
@@ -99,19 +102,49 @@ const ReviewSection = () => {
     fetchReviews();
   }, []);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.reviews-summary', {
+        y: 24,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 78%',
+        },
+      });
+
+      gsap.from('.review-tile', {
+        y: 36,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.reviews-grid',
+          start: 'top 82%',
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [reviews]);
+
   return (
     <SectionWrapper id="reviews" className="bg-cream-dark">
-      <SectionHeading
-        title="What Our Community Says"
-        subtitle="Real reviews from real peanut butter lovers."
-      />
+      <div ref={sectionRef}>
+        <SectionHeading
+          title="What Our Community Says"
+          subtitle="Real reviews from real peanut butter lovers."
+        />
 
       {/* Rating Summary */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        className="flex flex-col items-center mb-12"
+        className="reviews-summary flex flex-col items-center mb-12"
       >
         <div className="flex items-baseline gap-2 mb-2">
           <span className="font-serif text-5xl font-bold text-dark">{averageRating}</span>
@@ -142,12 +175,15 @@ const ReviewSection = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-30px' }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="reviews-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {reviews.map((review) => (
-          <ReviewCard key={review._id} review={review} />
+          <div key={review._id} className="review-tile">
+            <ReviewCard review={review} />
+          </div>
         ))}
       </motion.div>
+      </div>
     </SectionWrapper>
   );
 };

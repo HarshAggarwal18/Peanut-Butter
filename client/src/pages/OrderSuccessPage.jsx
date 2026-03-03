@@ -7,6 +7,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../lib/api';
 import Button from '../components/ui/Button';
+import PageTransition from '../components/ui/PageTransition';
 import { useCart } from '../context/CartContext';
 
 const OrderSuccessPage = () => {
@@ -38,13 +39,14 @@ const OrderSuccessPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream pt-20 pb-16">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-lg px-4"
-      >
+    <PageTransition>
+      <div className="min-h-screen flex items-center justify-center bg-cream pt-20 pb-16">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-lg px-4"
+        >
         {/* Success Icon */}
         <motion.div
           initial={{ scale: 0 }}
@@ -104,22 +106,23 @@ const OrderSuccessPage = () => {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/">
-            <Button variant="golden" size="lg">
-              Continue Shopping
-            </Button>
-          </Link>
-          {order && (
-            <Link to={`/orders/${order._id}`}>
-              <Button variant="secondary" size="lg">
-                View Order
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/">
+              <Button variant="golden" size="lg">
+                Continue Shopping
               </Button>
             </Link>
-          )}
-        </div>
-      </motion.div>
-    </div>
+            {order && (
+              <Link to={`/orders/${order._id}`}>
+                <Button variant="secondary" size="lg">
+                  View Order
+                </Button>
+              </Link>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    </PageTransition>
   );
 };
 
