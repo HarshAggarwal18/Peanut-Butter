@@ -1,0 +1,121 @@
+/*
+ * PB Brand — Design System & Global Styles
+ *
+ * Color Palette:
+ *   Cream:        #FDF6EC (background)
+ *   Beige:        #E8D5B7 (accent light)
+ *   Golden:       #C4973B (accent)
+ *   Peanut Brown: #8B5E3C (primary)
+ *   Chocolate:    #3E2723 (text)
+ *   Dark:         #1A0E0A (headings)
+ *
+ * Typography:
+ *   Headings: Playfair Display (serif)
+ *   Body:     Inter (sans-serif)
+ *
+ * Spacing: 8px base scale
+ */
+
+@import "tailwindcss";
+
+/* ─── Tailwind v4 Theme ─────────────────────────────── */
+@theme {
+  --color-cream: #FDF6EC;
+  --color-cream-dark: #F5E6CE;
+  --color-beige: #E8D5B7;
+  --color-golden: #C4973B;
+  --color-golden-light: #D4A94E;
+  --color-peanut: #8B5E3C;
+  --color-peanut-light: #A67B5B;
+  --color-peanut-dark: #6D4229;
+  --color-chocolate: #3E2723;
+  --color-dark: #1A0E0A;
+  --color-white: #FFFFFF;
+  --color-success: #4CAF50;
+  --color-error: #E53935;
+  --color-warning: #FF9800;
+
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --shadow-soft: 0 4px 20px rgba(62, 39, 35, 0.08);
+  --shadow-medium: 0 8px 32px rgba(62, 39, 35, 0.12);
+  --shadow-strong: 0 12px 48px rgba(62, 39, 35, 0.16);
+  --shadow-glow: 0 0 40px rgba(196, 151, 59, 0.2);
+
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Base Styles ────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-cream);
+    color: var(--color-chocolate);
+    line-height: 1.7;
+    overflow-x: hidden;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    color: var(--color-dark);
+    line-height: 1.2;
+    font-weight: 600;
+  }
+
+  h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); }
+  h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+
+  ::selection {
+    background-color: var(--color-golden);
+    color: var(--color-white);
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--color-cream); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-peanut-light);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-peanut);
+  }
+}
+
+/* ─── Utility Classes ────────────────────────────────── */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-peanut), var(--color-golden));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-premium {
+    background: linear-gradient(135deg, var(--color-cream) 0%, var(--color-beige) 100%);
+  }
+
+  .bg-gradient-dark {
+    background: linear-gradient(135deg, var(--color-chocolate) 0%, var(--color-dark) 100%);
+  }
+
+  .section-padding {
+    padding-top: clamp(4rem, 8vw, 8rem);
+    padding-bottom: clamp(4rem, 8vw, 8rem);
+  }
+
+  .container-custom {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1rem, 4vw, 2rem);
+    padding-right: clamp(1rem, 4vw, 2rem);
+  }
+}
