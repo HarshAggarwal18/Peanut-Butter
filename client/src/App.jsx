@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import ProductPage from './pages/ProductPage';
 
 function App() {
   const location = useLocation();
@@ -23,6 +24,7 @@ function App() {
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/products/:identifier" element={<ProductPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/order-success" element={<OrderSuccessPage />} />

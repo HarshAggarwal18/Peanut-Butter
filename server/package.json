@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed": "node src/utils/seeder.js"
+    "seed": "node src/utils/seeder.js",
+    "setup:dev": "npm run seed && npm run dev",
+    "setup:start": "npm run seed && npm run start"
   },
   "keywords": ["peanut-butter", "premium", "ecommerce"],
   "author": "PB Brand",

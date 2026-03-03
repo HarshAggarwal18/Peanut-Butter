@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { hoverScale } from '../animations/variants';
 
@@ -31,6 +32,7 @@ const ProductCard = ({ product }) => {
   const discount = variant.compareAtPrice
     ? Math.round(((variant.compareAtPrice - variant.price) / variant.compareAtPrice) * 100)
     : 0;
+  const productPath = `/products/${product.slug || product._id}`;
 
   const handleMouseMove = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -59,18 +61,20 @@ const ProductCard = ({ product }) => {
     >
       {/* Image */}
       <div className="relative aspect-square bg-gradient-premium overflow-hidden">
-        {primaryImage ? (
-          <img
-            src={primaryImage.url}
-            alt={primaryImage.alt || product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="font-serif text-4xl text-peanut/20">PB</span>
-          </div>
-        )}
+        <Link to={productPath} className="block w-full h-full">
+          {primaryImage ? (
+            <img
+              src={primaryImage.url}
+              alt={primaryImage.alt || product.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="font-serif text-4xl text-peanut/20">PB</span>
+            </div>
+          )}
+        </Link>
 
         {/* Discount Badge */}
         {discount > 0 && (
@@ -113,7 +117,9 @@ const ProductCard = ({ product }) => {
 
         {/* Name & Rating */}
         <h3 className="font-serif text-lg font-semibold text-dark mb-1 leading-tight">
-          {product.name}
+          <Link to={productPath} className="hover:text-golden transition-colors duration-300">
+            {product.name}
+          </Link>
         </h3>
 
         {product.ratingsAverage > 0 && (
@@ -167,15 +173,23 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Add to Cart Button */}
-        <motion.button
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => addItem(product, variant)}
-          className="w-full mt-4 py-3 bg-peanut text-cream font-medium rounded-xl hover:bg-peanut-dark transition-colors duration-300 text-sm"
-        >
-          Add to Cart — ₹{variant.price}
-        </motion.button>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <Link
+            to={productPath}
+            className="py-3 text-center bg-cream text-peanut font-medium rounded-xl hover:bg-beige transition-colors duration-300 text-sm"
+          >
+            View Details
+          </Link>
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => addItem(product, variant)}
+            className="py-3 bg-peanut text-cream font-medium rounded-xl hover:bg-peanut-dark transition-colors duration-300 text-sm"
+          >
+            Add — ₹{variant.price}
+          </motion.button>
+        </div>
       </div>
     </motion.div>
   );

@@ -134,19 +134,17 @@ const productSchema = new mongoose.Schema(
 );
 
 // Indexes
-productSchema.index({ slug: 1 });
 productSchema.index({ category: 1, isActive: 1 });
 productSchema.index({ featured: 1 });
 
 // Auto-generate slug from name before save
-productSchema.pre('save', function (next) {
+productSchema.pre('save', function () {
   if (this.isModified('name')) {
     this.slug = this.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
   }
-  next();
 });
 
 // Virtual: reviews

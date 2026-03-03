@@ -128,18 +128,16 @@ const orderSchema = new mongoose.Schema(
 
 // Indexes
 orderSchema.index({ user: 1, createdAt: -1 });
-orderSchema.index({ orderNumber: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ stripeSessionId: 1 });
 
 // Auto-generate order number
-orderSchema.pre('save', async function (next) {
+orderSchema.pre('save', async function () {
   if (!this.orderNumber) {
     const count = await mongoose.model('Order').countDocuments();
     const timestamp = Date.now().toString(36).toUpperCase();
     this.orderNumber = `PB-${timestamp}-${String(count + 1).padStart(4, '0')}`;
   }
-  next();
 });
 
 module.exports = mongoose.model('Order', orderSchema);

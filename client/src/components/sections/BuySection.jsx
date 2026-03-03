@@ -23,6 +23,7 @@ const categories = [
 const BuySection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
   const sectionRef = useRef(null);
 
@@ -34,44 +35,56 @@ const BuySection = () => {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      gsap.from('.buy-filter-chip', {
-        y: 12,
-        opacity: 0,
-        duration: 0.45,
-        stagger: 0.06,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 78%',
-        },
-      });
+      gsap.fromTo(
+        '.buy-filter-chip',
+        { y: 12, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.45,
+          stagger: 0.06,
+          ease: 'power2.out',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 78%',
+            once: true,
+          },
+        }
+      );
 
-      gsap.from('.buy-product-item', {
-        y: 36,
-        opacity: 0,
-        duration: 0.75,
-        stagger: 0.12,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.buy-products-grid',
-          start: 'top 82%',
-        },
-      });
+      gsap.fromTo(
+        '.buy-product-item',
+        { y: 36, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.12,
+          ease: 'power3.out',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 82%',
+            once: true,
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [loading, products]);
+  }, [loading, products.length]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setErrorMessage('');
       const params = activeCategory ? { category: activeCategory } : {};
       const { data } = await api.get('/products', { params });
       setProducts(data.data);
     } catch (error) {
       console.error('Failed to fetch products:', error);
-      // Use fallback data if API is not running
-      setProducts([]);
+      setErrorMessage('Unable to refresh products right now. Showing last loaded items.');
     } finally {
       setLoading(false);
     }
@@ -84,6 +97,12 @@ const BuySection = () => {
           title="Shop Our Collection"
           subtitle="Choose your fuel. Each jar is crafted with the same unwavering commitment to quality."
         />
+
+      {errorMessage && (
+        <div className="max-w-xl mx-auto mb-6 px-4 py-2 rounded-xl bg-warning/10 text-warning text-sm text-center">
+          {errorMessage}
+        </div>
+      )}
 
       {/* Category Filter */}
       <div className="flex flex-wrap justify-center gap-3 mb-12">
