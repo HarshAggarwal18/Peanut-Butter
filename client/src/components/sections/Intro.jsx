@@ -131,8 +131,8 @@ const Intro = () => {
     setFrameIndex((prev) => (prev === nextFrame ? prev : nextFrame));
   });
 
-  const sequenceOpacity = useTransform(scrollYProgress, [0, 0.9, 1], [1, 1, 0]);
-  const heroEnterOverlayOpacity = useTransform(scrollYProgress, [0.88, 1], [0, 1]);
+  const sequenceOpacity = useTransform(scrollYProgress, [0, 0.85, 0.95], [1, 1, 0]);
+  const heroEnterOverlayOpacity = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
 
   return (
     <section id="intro-section" ref={sectionRef} className="relative h-[500vh] bg-black">

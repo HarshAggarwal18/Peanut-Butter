@@ -2,7 +2,7 @@
  * HeroSection — Cinematic full-viewport hero with layered GSAP animations.
  * Features: Split-text headline, magnetic CTA, floating badges, parallax jar, scroll indicator.
  */
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
 import Button from '../ui/Button';
@@ -15,6 +15,7 @@ const HeroSection = () => {
   const jarRef = useRef(null);
   const bgCircle1 = useRef(null);
   const bgCircle2 = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Framer Motion parallax for background circles
   const { scrollYProgress } = useScroll({
@@ -24,6 +25,35 @@ const HeroSection = () => {
   const bgY1 = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const bgY2 = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  // Listen for intro sequence completion
+  useEffect(() => {
+    const handleIntroComplete = (e) => {
+      if (e.detail.complete) {
+        setIsVisible(true);
+      }
+    };
+
+    // Check initial visibility
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    window.addEventListener('intro-sequence-complete', handleIntroComplete);
+    return () => {
+      window.removeEventListener('intro-sequence-complete', handleIntroComplete);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -106,8 +136,15 @@ const HeroSection = () => {
     <section
       ref={heroRef}
       id="hero-section"
-      className="relative min-h-screen flex items-center overflow-hidden bg-gradient-premium"
+      className="relative min-h-screen flex items-center overflow-hidden bg-gradient-premium -mt-[100vh]"
     >
+      {/* Smooth fade-in overlay for content */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isVisible ? 0 : 1 }}
+        transition={{ duration: 0.6 }}
+        className="absolute inset-0 bg-gradient-premium pointer-events-none z-20"
+      />
       {/* Animated background circles with parallax */}
       <motion.div
         ref={bgCircle1}
@@ -127,13 +164,19 @@ const HeroSection = () => {
         }}
       />
 
-      <motion.div style={{ opacity: heroOpacity }} className="container-custom relative z-10">
+      <motion.div 
+        style={{ opacity: heroOpacity }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isVisible ? 1 : 0 }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="container-custom relative z-10"
+      >
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen pt-24 pb-16">
           {/* Left: Copy */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
-            animate="visible"
+            animate={isVisible ? "visible" : "hidden"}
             className="max-w-xl"
           >
             {/* Eyebrow */}

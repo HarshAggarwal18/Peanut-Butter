@@ -7,6 +7,7 @@ import Intro from '../components/sections/Intro';
 import HeroSection from '../components/sections/HeroSection';
 import InfoSection from '../components/sections/InfoSection';
 import WhyDifferent from '../components/sections/WhyDifferent';
+import IngredientsSequence from '../components/sections/IngredientsSequence';
 import BenefitsSection from '../components/sections/BenefitsSection';
 import BuySection from '../components/sections/BuySection';
 import ReviewSection from '../components/sections/ReviewSection';
@@ -19,6 +20,7 @@ const HomePage = () => {
         <HeroSection />
         <InfoSection />
         <WhyDifferent />
+        <IngredientsSequence />
         <BenefitsSection />
         <BuySection />
         <ReviewSection />

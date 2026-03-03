@@ -26,38 +26,57 @@ function App() {
 
     setShowNavbar(false);
 
-    let observer;
+    let introObserver;
+    let heroObserver;
     let rafId;
+    let heroInView = false;
+    let introInView = false;
 
-    const attachIntroObserver = () => {
+    const updateNavbarVisibility = () => {
+      // Priority: if hero is visible, show navbar; otherwise hide if intro is visible
+      setShowNavbar(heroInView || !introInView);
+    };
+
+    const attachObservers = () => {
       const introSection = document.getElementById('intro-section');
-      if (!introSection) return false;
+      const heroSection = document.getElementById('hero-section');
+      
+      if (!introSection || !heroSection) return false;
 
-      observer = new IntersectionObserver(
+      // Watch intro section
+      introObserver = new IntersectionObserver(
         ([entry]) => {
-          // Only show navbar when intro section is completely out of view
-          setShowNavbar(!entry.isIntersecting);
+          introInView = entry.isIntersecting;
+          updateNavbarVisibility();
         },
-        { 
-          threshold: 0,
-          rootMargin: '-1px'
-        }
+        { threshold: 0.05 }
       );
 
-      observer.observe(introSection);
+      // Watch hero section - higher priority
+      heroObserver = new IntersectionObserver(
+        ([entry]) => {
+          heroInView = entry.isIntersecting;
+          updateNavbarVisibility();
+        },
+        { threshold: 0.01 }
+      );
+
+      introObserver.observe(introSection);
+      heroObserver.observe(heroSection);
       return true;
     };
 
-    const waitForIntro = () => {
-      if (!attachIntroObserver()) {
-        rafId = window.requestAnimationFrame(waitForIntro);
+    const waitForSections = () => {
+      if (!attachObservers()) {
+        rafId = window.requestAnimationFrame(waitForSections);
       }
     };
 
-    waitForIntro();
+    waitForSections();
 
     return () => {
-      if (observer) observer.disconnect();
+      if (introObserver) introObserver.disconnect();
+      if (heroObserver) heroObserver.disconnect();
       if (rafId) window.cancelAnimationFrame(rafId);
     };
   }, [location.pathname]);
