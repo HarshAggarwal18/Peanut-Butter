@@ -1,71 +1,54 @@
 /**
- * BenefitsSection — Four key benefits with animated counters and staggered cards.
- * Protein, Good Fats, Energy, Clean Ingredients.
+ * BenefitsSection — Clean premium benefits block with soft cards.
  */
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { gsap, ScrollTrigger } from '../../animations/gsapAnimations';
+import { gsap } from '../../animations/gsapAnimations';
 import SectionWrapper from '../ui/SectionWrapper';
 import SectionHeading from '../ui/SectionHeading';
-import AnimatedCounter from '../ui/AnimatedCounter';
-import { staggerContainer, staggerItem } from '../../animations/variants';
 
 const benefits = [
   {
-    title: 'High Protein',
-    value: '30',
-    valueSuffix: 'g',
-    unit: 'per 100g',
-    description:
-      'Fuel your muscles with one of the highest protein-per-serving ratios in the market. Perfect post-workout or as a daily protein boost.',
+    title: '25–32g Protein',
+    subtitle: 'Protein per 100g',
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+      <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16c1.5 1.2 3.3 1.6 5.5 1.1 1.8-.4 3.2-1.4 4.3-2.8" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 13.5c-.7-1.3-.9-2.6-.6-4 .4-1.8 1.8-3 3.6-3.2 1.5-.2 2.7.3 3.7 1.3" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 12.2c-.9 1.8-.7 3.8.5 5.2 1.3 1.5 3.3 2 5.1 1.4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 10.5c1.2-.5 2.5-.4 3.5.4" />
       </svg>
     ),
-    gradient: 'from-golden/20 to-golden/5',
   },
   {
-    title: 'Healthy Fats',
-    value: '50',
-    valueSuffix: 'g',
-    unit: 'per 100g',
-    description:
-      'Rich in monounsaturated and polyunsaturated fats that support heart health, brain function, and sustained energy throughout your day.',
+    title: 'Good Fats',
+    subtitle: 'Naturally occurring healthy fats',
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+      <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3.5c3.3 0 6 2.7 6 6 0 3.7-2.4 7-6 10.5C8.4 16.5 6 13.2 6 9.5c0-3.3 2.7-6 6-6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.8c1.7 0 3.1 1.4 3.1 3.1 0 2-1.2 3.8-3.1 5.8-1.9-2-3.1-3.8-3.1-5.8 0-1.7 1.4-3.1 3.1-3.1z" />
       </svg>
     ),
-    gradient: 'from-peanut/20 to-peanut/5',
   },
   {
-    title: 'Clean Energy',
-    value: '590',
-    valueSuffix: '',
-    unit: 'kcal per 100g',
-    description:
-      'Sustained, clean energy from whole-food fats and proteins. No sugar spikes, no crashes. Just steady fuel for peak performance.',
+    title: 'Energy',
+    subtitle: 'Natural sustained energy',
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+      <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2.8v2.6M4.8 12H2.2M21.8 12h-2.6M6.1 6.1L4.3 4.3M19.7 19.7l-1.8-1.8M17.9 6.1l1.8-1.8M6.1 17.9l-1.8 1.8" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6.8L9.8 12h2.4l-1.7 5.2 4.6-6h-2.6l1-4.4z" />
       </svg>
     ),
-    gradient: 'from-golden-light/20 to-golden-light/5',
   },
   {
-    title: 'Clean Label',
-    value: '2',
-    valueSuffix: '',
-    unit: 'ingredients only',
-    description:
-      'Just peanuts and sea salt. We believe food should be simple, honest, and transparent. Every jar. Every time.',
+    title: 'Clean',
+    subtitle: 'Simple ingredient formula',
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+      <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 20V9.8c0-2.5 1.5-4.6 4-5.5 2.3-.8 4.7-.4 6.4.9-1.2 2.2-3.2 3.7-5.9 4.4-1.6.4-2.8 1.3-3.6 2.6" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 13.5c2.6 0 4.8-1 6.6-3" />
       </svg>
     ),
-    gradient: 'from-success/20 to-success/5',
   },
 ];
 
@@ -98,60 +81,36 @@ const BenefitsSection = () => {
   }, []);
 
   return (
-    <SectionWrapper id="benefits">
+    <SectionWrapper id="benefits" className="bg-cream/90">
       <SectionHeading
-        title="Built For Performance"
-        subtitle="Every spoonful is engineered for those who demand more from their food."
+        title="Every Spoon Fuels Strength"
+        subtitle="Designed for those who take nutrition seriously — without compromising taste."
       />
 
       <div ref={sectionRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
         {benefits.map((benefit) => (
           <motion.div
             key={benefit.title}
-            whileHover={{ y: -10, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }}
-            className="benefit-card relative bg-white rounded-2xl p-8 shadow-soft hover:shadow-medium transition-all duration-500 group overflow-hidden"
+            whileHover={{ y: -6, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
+            className="benefit-card bg-white/90 rounded-3xl p-8 shadow-soft hover:shadow-medium transition-all duration-400 border border-white"
           >
-            {/* Gradient background on hover */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${benefit.gradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-            />
-
-            {/* Shine effect on hover */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-              <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out" />
+            <div className="text-peanut/55 mb-6 flex justify-center">
+              {benefit.icon}
             </div>
 
-            <div className="relative z-10">
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-premium flex items-center justify-center text-peanut mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-400">
-                {benefit.icon}
-              </div>
+            <h3 className="font-serif text-[2rem] leading-none text-dark text-center mb-3">
+              {benefit.title}
+            </h3>
 
-              {/* Animated Value */}
-              <div className="mb-4">
-                <AnimatedCounter
-                  value={benefit.value}
-                  suffix={benefit.valueSuffix || ''}
-                  className="font-serif text-4xl font-bold text-dark"
-                />
-                <span className="text-sm text-peanut-light ml-1">
-                  {benefit.unit}
-                </span>
-              </div>
-
-              {/* Title */}
-              <h3 className="font-serif text-lg font-semibold text-dark mb-3">
-                {benefit.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-sm text-chocolate/60 leading-relaxed">
-                {benefit.description}
-              </p>
-            </div>
+            <p className="text-center text-chocolate/60 text-[1.05rem] leading-snug max-w-[16rem] mx-auto">
+              {benefit.subtitle}
+            </p>
           </motion.div>
         ))}
       </div>
+
+      <div className="pointer-events-none absolute top-12 right-0 w-64 h-64 bg-beige/20 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-8 left-0 w-56 h-56 bg-golden/10 rounded-full blur-3xl" />
     </SectionWrapper>
   );
 };
