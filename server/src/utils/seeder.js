@@ -18,6 +18,52 @@ const connectDB = require('../config/db');
 
 const sampleProducts = [
   {
+    name: 'Peanut Power Creamy Peanut Butter',
+    tagline: 'Original blend. High protein. Clean ingredients.',
+    description:
+      'Peanut Power Creamy Peanut Butter is a smooth, high-protein spread crafted for everyday performance. No added sugar, no palm oil, and balanced flavor for shakes, toast, and snacks.',
+    category: 'creamy',
+    ingredients: [
+      'Sesame Seeds',
+      'Date Powder',
+      'Palm Fruit Stearin',
+      'Salt',
+      'Sunflower Lecithin',
+      'Rosemary Extract',
+    ],
+    nutrition: {
+      servingSize: '32g (2 tbsp)',
+      calories: 200,
+      protein: 6,
+      totalFat: 17,
+      saturatedFat: 3.5,
+      carbohydrates: 8,
+      fiber: 1,
+      sugar: 4,
+      sodium: 90,
+    },
+    variants: [
+      { size: '250g', price: 319, compareAtPrice: 399, stock: 120 },
+      { size: '500g', price: 579, compareAtPrice: 699, stock: 80 },
+      { size: '1kg', price: 1049, compareAtPrice: 1249, stock: 45 },
+    ],
+    images: [
+      {
+        url: '/images/peanut-power-front.png',
+        alt: 'Peanut Power Creamy Peanut Butter - Front',
+        isPrimary: true,
+      },
+      {
+        url: '/images/peanut-power-back.png',
+        alt: 'Peanut Power Creamy Peanut Butter - Back Label',
+      },
+    ],
+    badges: ['high-protein', 'no-palm-oil', 'gluten-free', 'vegan'],
+    featured: true,
+    ratingsAverage: 4.7,
+    ratingsCount: 18,
+  },
+  {
     name: 'Classic Creamy Peanut Butter',
     tagline: 'Silky smooth. Pure protein. Zero compromise.',
     description:

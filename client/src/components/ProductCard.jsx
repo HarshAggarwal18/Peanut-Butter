@@ -29,6 +29,9 @@ const ProductCard = ({ product }) => {
   const variant = product.variants[selectedVariant];
   const primaryImage =
     product.images?.find((img) => img.isPrimary) || product.images?.[0];
+  const secondaryImage =
+    product.images?.find((img) => !img.isPrimary) ||
+    (product.images?.length > 1 ? product.images[1] : null);
   const discount = variant.compareAtPrice
     ? Math.round(((variant.compareAtPrice - variant.price) / variant.compareAtPrice) * 100)
     : 0;
@@ -63,12 +66,24 @@ const ProductCard = ({ product }) => {
       <div className="relative aspect-square bg-gradient-premium overflow-hidden">
         <Link to={productPath} className="block w-full h-full">
           {primaryImage ? (
-            <img
-              src={primaryImage.url}
-              alt={primaryImage.alt || product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              loading="lazy"
-            />
+            <>
+              <img
+                src={primaryImage.url}
+                alt={primaryImage.alt || product.name}
+                className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
+                  secondaryImage ? 'opacity-100 group-hover:opacity-0 group-hover:scale-105' : 'scale-100 group-hover:scale-105'
+                }`}
+                loading="lazy"
+              />
+              {secondaryImage && (
+                <img
+                  src={secondaryImage.url}
+                  alt={secondaryImage.alt || `${product.name} back view`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 scale-105 group-hover:scale-100 transition-all duration-500"
+                  loading="lazy"
+                />
+              )}
+            </>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <span className="font-serif text-4xl text-peanut/20">PB</span>
